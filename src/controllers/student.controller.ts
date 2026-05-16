@@ -5,8 +5,10 @@ import { StudentService } from "../services/student.service";
 export class StudentController {
 
     constructor(private studentService : StudentService) {}
+  
+    //Create Student
 
-    async createStudent (req : Request , res : Response) {
+    async createStudent (req : Request , res : Response) : Promise<void> {
 
         try{
 
@@ -19,7 +21,9 @@ export class StudentController {
         }
     }
 
-    async getAllStudents (req : Request , res : Response) {
+    //List Students
+
+    async getAllStudents (req : Request , res : Response) : Promise<void> {
 
         try {
 
@@ -33,8 +37,9 @@ export class StudentController {
         }
     }
 
+    //Update Student
 
-    async updateStudent (req : Request , res: Response) {
+    async updateStudent (req : Request , res: Response) : Promise<void> {
 
         try{
             await this.studentService.updateStudent(
@@ -49,7 +54,9 @@ export class StudentController {
         }
     }
 
-    async deleteStudent(req : Request , res : Response) {
+    //Delete Student
+
+    async deleteStudent(req : Request , res : Response) : Promise<void> {
 
         try{
             

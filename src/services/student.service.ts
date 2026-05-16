@@ -2,9 +2,11 @@ import { StudentRepository } from "../repositories/student.repository";
 import { IStudent } from "../models/student.model";
 
 export class StudentService {
+
   constructor(private studentRepository: StudentRepository) {}
 
   async createStudent(data: Partial<IStudent>) {
+    
     if (!data.name || !data.age || !data.grade) {
       throw new Error("All feilds are requred");
     }

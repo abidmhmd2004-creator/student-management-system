@@ -2,12 +2,11 @@ import { response, Router } from "express";
 import { StudentController } from "../controllers/student.controller";
 import { StudentService } from "../services/student.service";
 import { StudentRepository } from "../repositories/student.repository";
-import { resolveObjectURL } from "buffer";
 
 const router = Router();
 
 
-// Dependency injection
+// Dependency Injection
 
 const repository = new StudentRepository();
 const service = new StudentService(repository);

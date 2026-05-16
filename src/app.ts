@@ -12,6 +12,7 @@ dotenv.config();
 const app = express();
 
 connectDB();
+
 import methodOverride from "method-override";
 app.use(loggerMiddleware);
 
