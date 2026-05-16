@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Student Management</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+    <style>
+
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            background: #f4f4f4;
+            padding: 40px;
+        }
+
+        .container{
+            max-width: 950px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+
+        .top-bar{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h1{
+            color: #333;
+        }
+
+        .add-btn{
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        .add-btn:hover{
+            background: #0056b3;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        table th{
+            background: #007bff;
+            color: white;
+            padding: 14px;
+            text-align: center;
+        }
+
+        table td{
+            padding: 14px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        tr:hover{
+            background: #f9f9f9;
+        }
+
+        .action-cell{
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .action-btns{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .edit-btn{
+            color: #28a745;
+            cursor: pointer;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .edit-btn:hover{
+            transform: scale(1.1);
+        }
+
+        .delete-btn{
+            background: none;
+            border: none;
+            color: red;
+            cursor: pointer;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .delete-btn:hover{
+            transform: scale(1.1);
+        }
+
+        .modal{
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+        }
+
+        .modal-content{
+            background: white;
+            width: 350px;
+            padding: 25px;
+            border-radius: 10px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+        }
+
+        .modal-content h2{
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-content input{
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .modal-content input:focus{
+            border-color: #007bff;
+        }
+
+        .save-btn{
+            width: 100%;
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .save-btn:hover{
+            background: #0056b3;
+        }
+
+        .close-btn{
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
+            color: gray;
+        }
+
+        .close-btn:hover{
+            color: black;
+        }
+
+        .empty{
+            text-align: center;
+            padding: 20px;
+            color: gray;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="top-bar">
+
+            <h1>Student Management</h1>
+
+            <button
+                class="add-btn"
+                onclick="openAddModal()"
+            >
+                + Add Student
+            </button>
+
+        </div>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>No</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Grade</th>
+                    <th>Actions</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <% if(students.length > 0){ %>
+
+                    <% students.forEach((student, index) => { %>
+
+                        <tr>
+
+                            <td>
+                                <%= index + 1 %>
+                            </td>
+
+                            <td>
+                                <%= student.name %>
+                            </td>
+
+                            <td>
+                                <%= student.age %>
+                            </td>
+
+                            <td>
+                                <%= student.grade %>
+                            </td>
+
+                            <td class="action-cell">
+
+                                <div class="action-btns">
+
+                                    <i
+                                        class="fa-solid fa-pen-to-square edit-btn"
+                                        onclick="openEditModal(
+                                            '<%= student._id %>',
+                                            '<%= student.name %>',
+                                            '<%= student.age %>',
+                                            '<%= student.grade %>'
+                                        )"
+                                    ></i>
+
+                                    <form
+                                        action="/delete/<%= student._id %>"
+                                        method="POST"
+                                    >
+
+                                        <button
+                                            class="delete-btn"
+                                            type="submit"
+                                        >
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    <% }) %>
+
+                <% } else { %>
+
+                    <tr>
+
+                        <td
+                            colspan="5"
+                            class="empty"
+                        >
+                            No Students Found
+                        </td>
+
+                    </tr>
+
+                <% } %>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ADD MODAL -->
+
+    <div
+        class="modal"
+        id="addModal"
+    >
+
+        <div class="modal-content">
+
+            <span
+                class="close-btn"
+                onclick="closeAddModal()"
+            >
+                &times;
+            </span>
+
+            <h2>Add Student</h2>
+
+            <form
+                action="/"
+                method="POST"
+            >
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter Name"
+                    required
+                >
+
+                <input
+                    type="number"
+                    name="age"
+                    placeholder="Enter Age"
+                    required
+                >
+
+                <input
+                    type="text"
+                    name="grade"
+                    placeholder="Enter Grade"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="save-btn"
+                >
+                    Save
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- EDIT MODAL -->
+
+    <div
+        class="modal"
+        id="editModal"
+    >
+
+        <div class="modal-content">
+
+            <span
+                class="close-btn"
+                onclick="closeEditModal()"
+            >
+                &times;
+            </span>
+
+            <h2>Edit Student</h2>
+
+            <form
+                id="editForm"
+                method="POST"
+            >
+
+                <input
+                    type="text"
+                    name="name"
+                    id="editName"
+                    required
+                >
+
+                <input
+                    type="number"
+                    name="age"
+                    id="editAge"
+                    required
+                >
+
+                <input
+                    type="text"
+                    name="grade"
+                    id="editGrade"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="save-btn"
+                >
+                    Update
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function openAddModal() {
+
+            document.getElementById(
+                "addModal"
+            ).style.display = "block";
+        }
+
+        function closeAddModal() {
+
+            document.getElementById(
+                "addModal"
+            ).style.display = "none";
+        }
+
+        function openEditModal(
+            id,
+            name,
+            age,
+            grade
+        ) {
+
+            document.getElementById(
+                "editModal"
+            ).style.display = "block";
+
+            document.getElementById(
+                "editName"
+            ).value = name;
+
+            document.getElementById(
+                "editAge"
+            ).value = age;
+
+            document.getElementById(
+                "editGrade"
+            ).value = grade;
+
+            document.getElementById(
+                "editForm"
+            ).action = `/update/${id}`;
+        }
+
+        function closeEditModal() {
+
+            document.getElementById(
+                "editModal"
+            ).style.display = "none";
+        }
+
+        window.onclick = function(event) {
+
+            const addModal =
+                document.getElementById(
+                    "addModal"
+                );
+
+            const editModal =
+                document.getElementById(
+                    "editModal"
+                );
+
+            if(event.target === addModal){
+
+                closeAddModal();
+            }
+
+            if(event.target === editModal){
+
+                closeEditModal();
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>

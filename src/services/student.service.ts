@@ -1,12 +1,24 @@
-// import { Studentrepository } from "../repositories/stundent.repository.js";
+import { StudentRepository } from "../repositories/student.repository";
+import { IStudent } from "../models/student.model";
 
-// export class StudentService {
+export class StudentService {
+  constructor(private studentRepository: StudentRepository) {}
 
-//     constructor(private studentRepository : StudentService){
+  async createStudent(data: Partial<IStudent>) {
+    if (!data.name || !data.age || !data.grade) {
+      throw new Error("All feilds are requred");
+    }
 
-//         async createStudent(data : any) {
+    if (data.age <= 0) {
+      throw new Error("Age must be greater than 0");
+    }
 
-//             if(!data.name || !data.age || !data.grade)
-//         }
-//     }
-// }
+    return await this.studentRepository.createStudent(data);
+  }
+
+  async getAllStudents() {
+    
+    return await this.studentRepository.getAllStudents();
+  }
+
+}
