@@ -21,4 +21,16 @@ export class StudentService {
     return await this.studentRepository.getAllStudents();
   }
 
+  async updateStudent(id : string,data: Partial<IStudent>) {
+
+    if(data.age && data.age <=0){
+      throw new Error("Age must be greater than 0");
+    }
+
+    return await this.studentRepository.updateStudent(id,data)
+  }
+
+  async deleteStudent(id : string){
+    return await this.studentRepository.deleteStudent(id);
+  }
 }

@@ -32,4 +32,34 @@ export class StudentController {
             res.status(500).send(error.message);
         }
     }
+
+
+    async updateStudent (req : Request , res: Response) {
+
+        try{
+            await this.studentService.updateStudent(
+                req.params.id as string,
+                req.body
+            );
+
+            res.redirect("/");
+
+        }catch(error : any){
+            res.status(400).send(error.message);
+        }
+    }
+
+    async deleteStudent(req : Request , res : Response) {
+
+        try{
+            
+            await this.studentService.deleteStudent(req.params.id as string);
+
+            res.redirect("/");
+
+        }catch(error : any){
+
+            res.status(400).send(error.message);
+        }
+    }
 }
